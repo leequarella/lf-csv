@@ -1,4 +1,4 @@
 require 'csv'
-require 'lf_csv/importer'
+require 'lf-csv/importer'
 module LFCSV
 end

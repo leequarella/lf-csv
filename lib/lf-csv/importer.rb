@@ -1,5 +1,5 @@
 module LFCSV
-  class CSVImporter
+  class Importer
     @@header_symbols   = []
     @@header_aliases   = {}
     attr_accessor :rows_count
