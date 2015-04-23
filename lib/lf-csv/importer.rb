@@ -80,7 +80,7 @@ module LFCSV
 
     def handle_row(row)
       raise "No method has been defined for handling this file.
-             You must define a method in the class inheriting from CSV IMPORTER."
+             You must define a method in the class inheriting from LSCSV::Importer."
     end
   end
 end

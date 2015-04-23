@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
   s.files       = ["lib/lf-csv.rb",
                    "lib/lf-csv/importer.rb",
+                   "lib/lf-csv/batch_importer.rb",
                    ]
   s.homepage    = 'https://github.com/leequarella/lf-csv'
 end

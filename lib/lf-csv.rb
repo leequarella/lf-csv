@@ -1,4 +1,3 @@
 require 'csv'
 require 'lf-csv/importer'
-module LFCSV
-end
+require 'lf-csv/batch_importer'
