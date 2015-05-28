@@ -26,6 +26,7 @@ module LFCSV
     private
     def self.column symbol, aliases
       @@header_symbols << symbol unless @@header_symbols.include?(symbol)
+      aliases.map! { |a| a.strip.downcase }
       if @@header_aliases[symbol]
         @@header_aliases[symbol] = (@@header_aliases[symbol] + aliases).uniq
       else
@@ -46,6 +47,7 @@ module LFCSV
     def parse_header header_string, index
       matched = false
       @@header_symbols.each do |header_symbol|
+        next unless header_string
         search_string = header_string.strip.downcase
         if @@header_aliases[header_symbol].include?(search_string)
           matched = true
