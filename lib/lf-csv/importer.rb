@@ -27,13 +27,13 @@ module LFCSV
     def self.column(symbol, aliases=nil)
       @@header_symbols << symbol unless @@header_symbols.include?(symbol)
       if aliases
-        add_aliases_to_column aliases
+        add_aliases_to_column symbol, aliases
       else
         @@header_aliases[symbol] = [symbol.to_s]
       end
     end
 
-    def self.add_aliases_to_column aliases
+    def self.add_aliases_to_column symbol, aliases
       aliases.map! { |a| a.strip.downcase }
       if @@header_aliases[symbol]
         @@header_aliases[symbol] = (@@header_aliases[symbol] + aliases).uniq
