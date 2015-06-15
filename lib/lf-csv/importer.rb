@@ -24,8 +24,9 @@ module LFCSV
     end
 
     private
-    def self.column symbol, aliases
+    def self.column(symbol, aliases=nil)
       @@header_symbols << symbol unless @@header_symbols.include?(symbol)
+      return unless aliases
       aliases.map! { |a| a.strip.downcase }
       if @@header_aliases[symbol]
         @@header_aliases[symbol] = (@@header_aliases[symbol] + aliases).uniq
