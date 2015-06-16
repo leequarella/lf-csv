@@ -14,12 +14,13 @@ module LFCSV
     def process
       rows = CSV.parse(@file.read,
         force_quotes: @use_quotes,
-        headers: true,
-        col_sep: @column_seperator,
-        quote_char: @quote_char,
-        skip_blanks: false)
+        headers:      true,
+        col_sep:      @column_seperator,
+        quote_char:   @quote_char,
+        skip_blanks:  false)
       @rows_count = rows.count
       header_index = parse_headers(rows.headers)
+      puts header_index
       rows.each {|row| process_csv_row(row, header_index)}
     end
 
@@ -53,10 +54,10 @@ module LFCSV
     end
 
     def parse_header header_string, index
+      return false unless header_string
+      search_string = header_string.strip.downcase
       matched = false
       @@header_symbols.each do |header_symbol|
-        next unless header_string
-        search_string = header_string.strip.downcase
         if @@header_aliases[header_symbol].include?(search_string)
           matched = true
           @header_index[header_symbol] = index
