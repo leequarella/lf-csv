@@ -1,8 +1,38 @@
 module LFCSV
   class Importer
-    @@header_symbols   = []
-    @@header_aliases   = {}
     attr_accessor :rows_count
+
+    class << self
+      def setup_headers
+        @header_symbols = [] unless @header_symbols
+        @header_aliases = {} unless @header_aliases
+      end
+
+      def column(symbol, aliases=nil)
+        setup_headers
+        @header_symbols << symbol unless @header_symbols.include?(symbol)
+        attach_aliases(symbol, aliases)
+      end
+
+      def attach_aliases(symbol, aliases)
+        if aliases
+          aliases.map! { |a| a.strip.downcase }
+          add_aliases_to_column symbol, aliases
+        else
+          @header_aliases[symbol] = [symbol.to_s]
+        end
+      end
+
+      def add_aliases_to_column symbol, aliases
+        if @header_aliases[symbol]
+          @header_aliases[symbol] = (@header_aliases[symbol] + aliases).uniq
+        else
+          @header_aliases[symbol] = aliases
+        end
+      end
+      attr_reader :header_symbols, :header_aliases
+    end
+
 
     def initialize(data)
       @file             = data[:file]
@@ -25,24 +55,6 @@ module LFCSV
     end
 
     private
-    def self.column(symbol, aliases=nil)
-      @@header_symbols << symbol unless @@header_symbols.include?(symbol)
-      if aliases
-        add_aliases_to_column symbol, aliases
-      else
-        @@header_aliases[symbol] = [symbol.to_s]
-      end
-    end
-
-    def self.add_aliases_to_column symbol, aliases
-      aliases.map! { |a| a.strip.downcase }
-      if @@header_aliases[symbol]
-        @@header_aliases[symbol] = (@@header_aliases[symbol] + aliases).uniq
-      else
-        @@header_aliases[symbol] = aliases
-      end
-    end
-
     def parse_headers(header_strings)
       @header_index = {}
       unmatched = []
@@ -57,8 +69,8 @@ module LFCSV
       return false unless header_string
       search_string = header_string.strip.downcase
       matched = false
-      @@header_symbols.each do |header_symbol|
-        if @@header_aliases[header_symbol].include?(search_string)
+      self.class.header_symbols.each do |header_symbol|
+        if self.class.header_aliases[header_symbol].include?(search_string)
           matched = true
           @header_index[header_symbol] = index
           break
@@ -73,7 +85,7 @@ module LFCSV
 
     def convert_row_to_hash(row, header_index)
       hash = {}
-      @@header_symbols.each do |header_symbol|
+      self.class.header_symbols.each do |header_symbol|
         if header_index[header_symbol]
           hash[header_symbol] = clean_encode(row[header_index[header_symbol]])
         end
