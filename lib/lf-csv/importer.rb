@@ -50,7 +50,6 @@ module LFCSV
         skip_blanks:  false)
       @rows_count = rows.count
       header_index = parse_headers(rows.headers)
-      puts header_index
       rows.each {|row| process_csv_row(row, header_index)}
     end
 
