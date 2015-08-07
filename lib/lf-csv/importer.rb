@@ -42,7 +42,7 @@ module LFCSV
     end
 
     def process
-      rows = CSV.parse(@file.read,
+      rows = CSV.parse(stringify_input(@file),
         force_quotes: @use_quotes,
         headers:      true,
         col_sep:      @column_seperator,
@@ -54,6 +54,14 @@ module LFCSV
     end
 
     private
+    def stringify_input(file)
+      if file.class.name != "String"
+        file.read
+      else
+        file
+      end
+    end
+
     def parse_headers(header_strings)
       @header_index = {}
       unmatched = []
@@ -104,5 +112,6 @@ module LFCSV
       raise "No method has been defined for handling this file.
              You must define a method in the class inheriting from LSCSV::Importer."
     end
+
   end
 end
