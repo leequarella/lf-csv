@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'lf-csv'
-  s.version     = '0.0.8'
-  s.date        = '2015-05-28'
+  s.version     = '0.0.9'
+  s.date        = '2016-03-31'
   s.summary     = "CSV Tools of LucidFrog"
   s.description = ""
   s.authors     = ["Lee Quarella"]
