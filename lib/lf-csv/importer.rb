@@ -138,7 +138,7 @@ module LFCSV
              You must define a method in the class inheriting from LSCSV::Importer."
     end
 
-    def missing_column_header
+    def missing_column_headers(missing_headers=nil)
       raise "Required columns are missing from this file."
     end
 

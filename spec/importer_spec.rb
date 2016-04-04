@@ -51,13 +51,18 @@ describe LFCSV::Importer, "#Importer" do
     end
 
     context "when a required header is missing" do
-      it "calls `missing_column_header` and does not process any rows" do
+      let(:importer){
         LFCSV::Importer.column :a_missing_column, required: true
-        importer = LFCSV::Importer.new(file: csv_file)
-
+        LFCSV::Importer.new(file: csv_file)
+      }
+      it "calls `missing_column_headers` and does not process any rows" do
         expect(importer).to_not receive(:handle_row)
         expect(importer).to receive(:missing_column_headers).with([:a_missing_column])
         importer.process
+      end
+
+      it "kicks an error telling user to implement `missing_column_headers` method" do
+        expect{importer.process}.to raise_error "Required columns are missing from this file."
       end
     end
   end
