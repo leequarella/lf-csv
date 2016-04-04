@@ -55,9 +55,9 @@ module LFCSV
         quote_char:   @quote_char,
         skip_blanks:  false)
       @rows_count = rows.count
-      header_index = parse_headers(rows.headers)
-      return if missing_required_headers?(rows.headers)
-      rows.each {|row| process_csv_row(row, header_index)}
+      indexed_file_headers = index_file_headers!(rows.headers)
+      return if missing_required_headers?(indexed_file_headers)
+      rows.each {|row| process_csv_row(row, indexed_file_headers)}
     end
 
     private
@@ -69,7 +69,7 @@ module LFCSV
       end
     end
 
-    def parse_headers(header_strings)
+    def index_file_headers!(header_strings)
       @header_index = {}
       unmatched = []
       header_strings.each_with_index do |header_string, index|
@@ -93,8 +93,8 @@ module LFCSV
       matched
     end
 
-    def missing_required_headers?(file_headers)
-      missing_headers = required_headers - file_headers
+    def missing_required_headers?(indexed_file_headers)
+      missing_headers = required_headers - file_header_symbols(indexed_file_headers)
       if missing_headers.any?
         missing_column_headers(missing_headers)
         true
@@ -109,6 +109,10 @@ module LFCSV
         required << symbol if info[:required] == true
       end
       required
+    end
+
+    def file_header_symbols(indexed_file_headers)
+      indexed_file_headers.collect { |symbol, info| symbol }
     end
 
     def process_csv_row(row, header_index)
@@ -135,11 +139,13 @@ module LFCSV
 
     def handle_row(row)
       raise "No method has been defined for handling this file.
-             You must define a method in the class inheriting from LSCSV::Importer."
+             You must define a method called `handle_row(row)` in the class inheriting from LSCSV::Importer."
     end
 
     def missing_column_headers(missing_headers=nil)
-      raise "Required columns are missing from this file."
+      raise "No method has been defined for handling this file when missing column headers.
+             You must define a method named `missing_column_headers` in the class inheriting from LSCSV::Importer.
+             You may allow `missing_column_headers` to accept the `missing_headers` arg which will be an array of headers missing."
     end
 
   end
